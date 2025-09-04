@@ -1,0 +1,45 @@
+services:
+  # Database image
+  mysql_database1:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: karem
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_database1:/var/lib/mysql
+
+  # PhpMyAdmin
+  phpmyadmin1:
+    depends_on:
+      - mysql_database1
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: mysql_database1
+      MYSQL_ROOT_PASSWORD: 1234
+
+  # Wordpress
+  wordpress1:
+    depends_on:
+      - mysql_database1
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8001:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql_database1:3306
+      WORDPRESS_DB_USER: karem
+      WORDPRESS_DB_PASSWORD: 1234
+      WORDPRESS_DB_NAME: wordpress_db
+    volumes:
+      - ./:/var/www/html
+
+volumes:
+  mysql_database1: {}
