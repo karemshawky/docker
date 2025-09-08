@@ -1,7 +1,7 @@
 services:
   # Database image
   mysql_database1:
-    image: mysql
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1234
@@ -9,7 +9,7 @@ services:
       MYSQL_USER: karem
       MYSQL_PASSWORD: 1234
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
       - mysql_database1:/var/lib/mysql
 
@@ -20,7 +20,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8090:80"
+      - 8090:80
     environment:
       PMA_HOST: mysql_database1
       MYSQL_ROOT_PASSWORD: 1234
@@ -32,7 +32,7 @@ services:
     image: wordpress:latest
     restart: always
     ports:
-      - "8001:80"
+      - 8080:80
     environment:
       WORDPRESS_DB_HOST: mysql_database1:3306
       WORDPRESS_DB_USER: karem
@@ -40,6 +40,8 @@ services:
       WORDPRESS_DB_NAME: wordpress_db
     volumes:
       - ./:/var/www/html
+      # add permission to this conainer to be able to install plugins and themes
+      # chown -R www-data:www-data /var/www/html
 
 volumes:
   mysql_database1: {}
