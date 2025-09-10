@@ -11,6 +11,8 @@ RUN apk add --no-cache \
     curl \
     build-base \
     libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
     libxml2-dev \
     libzip-dev \
     oniguruma-dev \
@@ -19,7 +21,8 @@ RUN apk add --no-cache \
     openssl
 
 # Install extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install pdo pdo_mysql mbstring gd zip exif pcntl bcmath opcache
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
